@@ -14,6 +14,6 @@ import { getJWTConfig } from "../config/jwt.config";
     useFactory:getJWTConfig
   })],
   controllers: [AuthController],
-  providers: [AuthService,JwtStrategy]
+  providers: [AuthService,JwtStrategy],
 })
 export class AuthModule {}

@@ -25,7 +25,7 @@ export class AuthService {
 
     const user = await newUser.save()
 
-    const tokens = await this.issueTokenPair(String(user._id))
+    const tokens = await this.issueTokenPair(String(user._id),user.isAdmin)
 
     return {
       user: this.returnUserFields(user),
@@ -40,7 +40,7 @@ export class AuthService {
     if(!result) throw new UnauthorizedException('Invalid token or expired!')
     const user = await this.User.findById(result._id)
 
-    const tokens = await this.issueTokenPair(String(user._id))
+    const tokens = await this.issueTokenPair(String(user._id),user.isAdmin)
 
     return {
       user: this.returnUserFields(user),
@@ -50,7 +50,7 @@ export class AuthService {
 
   async login(dto){
     const user = await this.validateUser(dto)
-    const tokens = await this.issueTokenPair(String(user._id))
+    const tokens = await this.issueTokenPair(String(user._id),user.isAdmin)
 
     return {
       user: this.returnUserFields(user),
@@ -67,8 +67,8 @@ export class AuthService {
 
     return user
   }
-  async issueTokenPair(userId:string){
-    const data = {_id:userId}
+  async issueTokenPair(userId:string,isAdmin:boolean){
+    const data = {_id:userId,isAdmin}
 
     const refreshToken = await this.jwtService.signAsync(data,{
       expiresIn:"24d"
